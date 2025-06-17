@@ -113,7 +113,7 @@
 (defn build-hash-map-fn [[key value]]
   (let [function-name (->> key first name (format "check-key-%s-value") symbol)]
     `(fn ~function-name [x#]
-       (s/valid? ~value (get-in x# ~key)))))
+       (s/valid? (s/cat :k ~key :v ~value) (find x# (first ~key))))))
 
 (defmethod ^:private transform :map [[_ & values]]
   (->> values

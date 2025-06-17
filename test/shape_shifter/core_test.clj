@@ -30,6 +30,12 @@
     (let [spec (core/pattern->spec "{:schema [1 2 3 $string] :require true}")]
       (is (s/valid? spec {:schema [1 2 3 "banana"] :require true}))))
 
+  (testing "when the pattern has a hash-map with a wildcard value"
+    (let [spec (core/pattern->spec "{:schema $ :require true}")]
+      (is (s/valid? spec {:schema [1 2 3 "banana"] :require true :foo 'bar}))
+      (is (s/valid? spec {:schema nil :require true :foo 'bar}))
+      (is (not (s/valid? spec {:require true :foo 'bar})))))
+
   (testing "when the pattern has nested lists"
     (let [spec (core/pattern->spec "(+ 1 ($symbol 10 $number))")]
       (is (s/valid? spec '(+ 1 (- 10 1))))))
